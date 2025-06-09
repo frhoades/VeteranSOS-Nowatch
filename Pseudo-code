@@ -1,0 +1,52 @@
+function onAppStart():
+    if firstRun():
+        showPermissionsOnboarding()   // request CALL_PHONE, LOCATION, PHONE_STATE
+    else:
+        // Permissions already granted on a previous run:contentReference[oaicite:5]{index=5}.
+        initializeApp()
+
+function showPermissionsOnboarding():
+    requestPermissions(CALL_PHONE, ACCESS_FINE_LOCATION, READ_PHONE_STATE)
+    // On permissions granted:
+    if allPermissionsGranted():
+        saveFlag(isOnboarded = true)
+        initializeApp()
+    else:
+        showError("Permissions are required for the app to function")
+        exit()
+
+function initializeApp():
+    loadEmergencyContacts()          // Could be hard-coded or user-defined
+    setupGoogleMap()                 // Initialize MapFragment and location client:contentReference[oaicite:6]{index=6}
+    setupPanicButton(callback=onPanicButtonPressed)
+
+function onPanicButtonPressed():
+    location = getCurrentLocation()              // via Google Maps/FusedLocation
+    timestamp = currentTime()
+    saveEventToLocalDB(location, timestamp)      // SQLite storage:contentReference[oaicite:7]{index=7}
+    callEmergencyContactsSequentially()
+    if networkIsConnected():
+        syncPendingEvents()
+    else:
+        scheduleSyncOnNetwork()                  // e.g. WorkManager to retry:contentReference[oaicite:8]{index=8}
+
+function callEmergencyContactsSequentially():
+    for contactNumber in emergencyContacts:
+        initiateCall(contactNumber)             // Intent ACTION_CALL:contentReference[oaicite:9]{index=9}
+        wait until call ends
+        if callWasAnswered():
+            break                               // Stop after first successful call
+
+function initiateCall(number):
+    intent = Intent(ACTION_CALL, Uri.parse("tel:" + number))
+    startActivity(intent)
+    // The CALL_PHONE permission must be declared in AndroidManifest:contentReference[oaicite:10]{index=10}.
+
+function onNetworkRestored():
+    syncPendingEvents()                         // Upload stored events now that network is back
+
+function syncPendingEvents():
+    for event in getUnsentEventsFromDB():
+        success = uploadEventToServer(event)
+        if success:
+            markEventSent(event.id)

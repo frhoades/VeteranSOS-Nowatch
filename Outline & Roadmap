@@ -1,0 +1,49 @@
+**Pseudocode Outline**
+
+1. Initialization / Onboarding: On first launch, check and request runtime permissions   (CALL_PHONE, ACCESS_FINE_LOCATION, READ_PHONE_STATE). Android requires these to place calls and get location. Show a brief onboarding screen explaining permissions. After permission grant, set a flag so subsequent launches skip this step.
+
+2. Main UI: The app’s main screen has a panic button (and optionally a small map view). When         pressed, it triggers a panic event.
+
+3. Panic Event Handling: On panic, fetch the user’s current location (via Google Maps API or fused location). Immediately save a panic-event record (timestamp, latitude, longitude) to a local SQLite database. Then attempt to contact emergency numbers in sequence. For each number, launch an Intent.ACTION_CALL (requires CALL_PHONE permission developer.android.com). Listen to the phone state: if the call is answered (OFFHOOK) and then ends, consider that a success and stop further calls; otherwise, move to the next contact.
+
+4. Offline Queue and Sync: If there is no network when the panic button is pressed (or if sending fails), the event remains in SQLite. Register a network listener or WorkManager job to detect when connectivity returns. Once online, dequeue unsent events and upload them (or otherwise mark them handled), then clear the queue.
+
+**Development Roadmap**
+
+Development Roadmap
+
+1. Project Setup: Create a new Android project (Kotlin or Java) with AndroidX support. Add required libraries:
+ - Google Play Services – Maps: For location and mapping (add com.google.android.gms:play-services-maps)
+ - WorkManager: For background sync (androidx.work:work-runtime-ktx)
+developer.android.com
+ - Optionally Room (or just use core SQLite) for easier database access.
+
+2. Permissions Flow: Implement runtime permission requests on first run. Specifically request CALL_PHONE, ACCESS_FINE_LOCATION, and READ_PHONE_STATE. Follow Android’s guidelines. Show an initial screen explaining why these are needed. After granting, remember this in preferences to skip next time.
+
+3. UI Design: Build a simple main activity layout (activity_main.xml) containing:
+ - A Panic Button (e.g. a large “SOS” button).
+ - (Optional) A small MapFragment or SupportMapFragment to display current location
+ - Minimal text/instructions.
+
+ 4. Google Maps Integration: Configure the Google Maps API key in the manifest. In MainActivity, obtain the SupportMapFragment and implement OnMapReadyCallback
+ - Use the map or Android’s Location Services to get the current coordinates when needed.
+
+5. Contact List: Define emergency contacts (hard-code for MVP or allow user entry). Do not request READ_CONTACTS; for anonymity, store only the phone numbers the user provides.
+
+6. Call Sequence Logic:
+ - In code (e.g. a PanicService or in the button handler), loop through the list of contact numbers.
+ - For each, create an Intent with ACTION_CALL and tel: URI
+developer.android.com, then startActivity(). (Remember to declare <uses-permission android:name="android.permission.CALL_PHONE"/> in AndroidManifest.xml)
+ - Use a PhoneStateListener to detect when the call is answered (TelephonyManager.CALL_STATE_OFFHOOK) and when it ends. On answer, break the loop so you don’t call further contacts.
+
+7. Local Storage (SQLite): Implement an SQLiteOpenHelper subclass (e.g. DatabaseHelper). Create a table for panic events (columns: id, timestamp, latitude, longitude, sent_flag), as per Android’s SQLite tutorial. On each panic, insert a row. SQLite is ideal here because it “requires no administration” and handles intermittent connectivity well.
+
+8. Offline Sync: Add a WorkManager Worker (e.g. SyncWorker) that on execution reads unsent events from the database and attempts to upload them to your server or API. Use a network constraint so it runs only when online. If upload fails, return Result.retry() so WorkManager backs off and retries later. This ensures queued events are flushed when possible.
+
+9. Testing: Rigorously test:
+ - On first-run, permissions dialog appears; on subsequent runs, it does not (because we set the onboard flag).
+ - Panic button: calls dial in order, stops on first connection.
+ - Offline scenario: turn off Wi-Fi/cellular, press panic (it should save event locally), then enable network and verify that events sync.
+ - Location retrieval works and is stored.
+
+10. Deployment Prep: Prepare a clear README (see below), license info (e.g. MIT), and publish to GitHub. Ensure no hard-coded personal data. The app never logs user IDs or other PII, only timestamp and coordinates (for anonymity).

@@ -1,0 +1,20 @@
+##Repo Strucure Test File##
+VeteranSOSapp/
+├── app/
+│   ├── src/
+│   │   └── main/
+│   │       ├── AndroidManifest.xml
+│   │       ├── java/com/example/panicalert/
+│   │       │   ├── MainActivity.java
+│   │       │   ├── DatabaseHelper.java
+│   │       │   ├── SyncWorker.java
+│   │       │   └── (other classes...)
+│   │       └── res/
+│   │           ├── layout/
+│   │           │   └── activity_main.xml
+│   │           └── values/
+│   │               └── strings.xml
+│   ├── build.gradle
+│   └── proguard-rules.pro
+├── build.gradle
+└── README.md

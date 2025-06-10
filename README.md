@@ -5,7 +5,7 @@
 **This Repo is NOT production ready**
 
 **Features:** 
-- **One-tap SOS:** Press the panic button to initiate the alert.
+- **One-tap SOS:** Press the panic button to initiate the alert. **This event will be able to be triggered by a signal from the "Nowatch" proprietory application.**
 - **Automatic Calls:** Calls each emergency number in turn (uses `Intent.ACTION_CALL`:contentReference[oaicite:26]{index=26}).
 - **Location Logging:** Captures GPS location (via Google Maps API:contentReference[oaicite:27]{index=27}) and saves to local DB.
 - **Offline Support:** If offline, events queue locally; syncs with server when online using WorkManager:contentReference[oaicite:28]{index=28}.

@@ -2,7 +2,7 @@
 
 1. Initialization / Onboarding: On first launch, check and request runtime permissions   (CALL_PHONE, ACCESS_FINE_LOCATION, READ_PHONE_STATE). Android requires these to place calls and get location. Show a brief onboarding screen explaining permissions. After permission grant, set a flag so subsequent launches skip this step.
 
-2. Main UI: The app’s main screen has a panic button (and optionally a small map view). When         pressed, it triggers a panic event.
+2. Main UI: The app’s main screen has a panic button (and optionally a small map view). When button pressed, it triggers a panic event.
 
 3. Panic Event Handling: On panic, fetch the user’s current location (via Google Maps API or fused location). Immediately save a panic-event record (timestamp, latitude, longitude) to a local SQLite database. Then attempt to contact emergency numbers in sequence. For each number, launch an Intent.ACTION_CALL (requires CALL_PHONE permission developer.android.com). Listen to the phone state: if the call is answered (OFFHOOK) and then ends, consider that a success and stop further calls; otherwise, move to the next contact.
 
@@ -22,7 +22,7 @@ developer.android.com
 
 3. UI Design: Build a simple main activity layout (activity_main.xml) containing:
  - A Panic Button (e.g. a large “SOS” button).
- - (Optional) A small MapFragment or SupportMapFragment to display current location
+ - (Optional) A small MapFragment or SupportMapFragment to display current location and directions home.
  - Minimal text/instructions.
 
  4. Google Maps Integration: Configure the Google Maps API key in the manifest. In MainActivity, obtain the SupportMapFragment and implement OnMapReadyCallback
@@ -46,4 +46,4 @@ developer.android.com, then startActivity(). (Remember to declare <uses-permissi
  - Offline scenario: turn off Wi-Fi/cellular, press panic (it should save event locally), then enable network and verify that events sync.
  - Location retrieval works and is stored.
 
-10. Deployment Prep: Prepare a clear README (see below), license info (e.g. MIT), and publish to GitHub. Ensure no hard-coded personal data. The app never logs user IDs or other PII, only timestamp and coordinates (for anonymity).
+10. Deployment Prep: Ensure no hard-coded personal data. The app never logs user IDs or other PII, only timestamp and coordinates (for anonymity).

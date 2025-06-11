@@ -1,6 +1,6 @@
 # VeteranSOS-Nowatch
 
-**Description:** A simple Android app that lets a user trigger a specific “panic” alert by pressing a button. Real-time physiological data is read from a "Nowatch" wearable monitor and when a panic attack is detected, the app fetches the user’s location, logs an event, and automatically calls a list of emergency contacts in sequence until one answers or give immediate directions to the users saved "Home" location. All events are saved locally in SQLite and synced when internet is available. No personal data is stored (anonymous operation). 
+**Description:** A simple Android app that lets a user trigger a specific “panic” alert by measuring real-time physiological data read from a "Nowatch" wearable monitor and when a panic attack is detected, the app fetches the user’s location, logs an event, and automatically calls a list of emergency contacts in sequence until one answers or give immediate directions to the users saved "Home" location. All events are saved locally in SQLite and synced when internet is available. No personal data is stored (anonymous operation). 
 
 **This Repo is NOT production ready**
 

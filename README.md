@@ -5,7 +5,7 @@
 **This Repo is NOT production ready**
 
 **Features:** 
-- **One-tap SOS:** Press the panic button to initiate the alert. **This event will be able to be triggered by a signal from the "Nowatch" proprietory application.**
+- **One-tap SOS:** Press the panic button or when the signal from the Nowatch is received initiates the alert. **This event will be able to be triggered by a signal from the "Nowatch" proprietory application.**
 - **Automatic Calls:** Calls each emergency number in turn (uses `Intent.ACTION_CALL`:contentReference[oaicite:26]{index=26}).
 - **Location Logging:** Captures GPS location (via Google Maps API:contentReference[oaicite:27]{index=27}) and saves to local DB.
 - **Offline Support:** If offline, events queue locally; syncs with server when online using WorkManager:contentReference[oaicite:28]{index=28}.
@@ -18,7 +18,7 @@
 4. Grant requested permissions when prompted.  
 
 **Usage:** 
-- Tap the red “PANIC” button to start an alert.  
+- Tap the red “PANIC” button to start an alert. Wear the Nowatch. 
 - The app will dial emergency contacts until someone answers, and send event data if connected.  
 - In Settings (not yet implemented), users can configure phone numbers.
 
